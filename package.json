@@ -1,0 +1,19 @@
+{
+  "name": "city-picks-platform",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Multi-city local discovery app skeleton. City Picks is a placeholder name.",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:mobile": "npm --workspace @city-picks/mobile run start",
+    "dev:admin": "npm --workspace @city-picks/admin run dev",
+    "typecheck": "npm --workspaces --if-present run typecheck",
+    "lint": "npm --workspaces --if-present run lint"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
