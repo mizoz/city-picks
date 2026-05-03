@@ -1,30 +1,21 @@
 import './styles.css';
+import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
 
-export const metadata = {
-  title: 'City Picks Admin',
-  description: 'City-aware admin shell for local discovery recommendations.'
+export const metadata: Metadata = {
+  title: 'YYC Class Finder',
+  description: 'A fast way for Calgarians to find City of Calgary recreation programs by age, budget, day, and activity.'
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <body>
-        <aside>
-          <h1>City Picks</h1>
-          <p>Admin shell</p>
-          <nav>
-            <a href="/">Overview</a>
-            <a href="/cities">Cities</a>
-            <a href="/events">Events</a>
-            <a href="/submissions">Submissions</a>
-            <a href="/venues">Venues</a>
-            <a href="/promotions">Promotions</a>
-            <a href="/data-sources">Data Sources</a>
-          </nav>
-        </aside>
-        <main>{children}</main>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

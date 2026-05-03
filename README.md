@@ -1,31 +1,35 @@
-# City Picks (placeholder)
+# YYC Class Finder
 
-City Picks is a placeholder name for a multi-city local discovery app that answers: "What should I do today?"
+YYC Class Finder helps Calgarians find active City of Calgary recreation programs without digging through a giant open-data table. It filters city-run classes by age, budget, day, and activity, then links back to the official dataset for verification.
 
-The product is intentionally not Calgary-locked. Calgary is the first launch city, while the platform, data model, routes, and content structure are city-aware from day one.
+The problem: Calgary has useful public recreation data, but it is easier to browse as a parent, student, or adult learner when the first screen asks practical questions.
 
-## Product promise
+## Live Data
 
-Instead of showing hundreds of events, show a small number of good, relevant options based on city, neighborhood, time, budget, weather, company, mood, and category.
+The web app calls the City of Calgary Open Data Socrata API:
 
-## Repository structure
+- Dataset: Recreation Program Listings
+- Endpoint: `https://data.calgary.ca/resource/q9hh-gfbx.json`
+- Source page: `https://data.calgary.ca/Recreation-and-Culture/Recreation-Program-Listings/q9hh-gfbx`
+
+The Next.js route at `apps/admin/app/api/programs/route.ts` queries active programs and applies filters using Socrata `$where`, `$order`, and `$limit` parameters. Responses are cached for 15 minutes with Next.js revalidation.
+
+## Repository Structure
 
 ```txt
-apps/mobile        Expo React Native app shell
-apps/admin         Next.js admin dashboard shell
+apps/admin        Public Next.js web app
+apps/mobile       Earlier Expo shell, not part of the Vercel deployment
 packages/shared   Shared TypeScript types and constants
-supabase           Database migrations, seed data, future edge functions
-docs               Product, naming, data/legal, and build notes
+supabase           Earlier database schema and seed notes
+docs               Product and data notes
 ```
 
-## Quick start
+## Development
 
 Prerequisites:
 
 - Node.js 20+
 - npm 10+
-- Supabase CLI, only when running migrations locally
-- Expo Go or a mobile simulator for the mobile app
 
 Install dependencies:
 
@@ -33,16 +37,16 @@ Install dependencies:
 npm install
 ```
 
-Run mobile app shell:
-
-```bash
-npm run dev:mobile
-```
-
-Run admin app shell:
+Run the web app:
 
 ```bash
 npm run dev:admin
+```
+
+Build the Vercel app:
+
+```bash
+npm run build
 ```
 
 Run TypeScript checks:
@@ -51,24 +55,17 @@ Run TypeScript checks:
 npm run typecheck
 ```
 
-## Supabase local setup
+## Vercel
 
-Start Supabase locally:
+The root `vercel.json` builds the Next.js app from `apps/admin`:
 
-```bash
-supabase start
+```json
+{
+  "installCommand": "npm install",
+  "buildCommand": "npm run build",
+  "outputDirectory": "apps/admin/.next",
+  "framework": "nextjs"
+}
 ```
 
-Apply migrations:
-
-```bash
-supabase db reset
-```
-
-The initial seed file includes Calgary as the first beta city plus fake example venues/events. These are demo records only.
-
-## Environment variables
-
-Copy `.env.example` to `.env.local` in each app when ready to connect Supabase.
-
-No real API keys are required for the Phase 1 shell.
+No API key is required for the City of Calgary open-data endpoint used by this app.

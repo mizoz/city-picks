@@ -8,6 +8,7 @@
     "packages/*"
   ],
   "scripts": {
+    "build": "npm --workspace @city-picks/admin run build",
     "dev:mobile": "npm --workspace @city-picks/mobile run start",
     "dev:admin": "npm --workspace @city-picks/admin run dev",
     "typecheck": "npm --workspaces --if-present run typecheck",
