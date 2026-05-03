@@ -21,6 +21,15 @@ type CalgaryProgramRow = {
   course_type_web_description?: string;
 };
 
+function calgaryToday() {
+  return new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'America/Edmonton',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  }).format(new Date());
+}
+
 function cleanText(value?: string) {
   return (value ?? '')
     .replace(/<[^>]+>/g, ' ')
@@ -42,7 +51,7 @@ export async function GET(request: Request) {
   const maxPrice = toNumber(searchParams.get('maxPrice') ?? undefined);
   const keyword = searchParams.get('keyword')?.trim();
   const day = searchParams.get('day')?.trim();
-  const today = new Date().toISOString().slice(0, 10);
+  const today = calgaryToday();
 
   const where: string[] = ["course_status = 'Active'", `class_date >= '${today}'`];
 
@@ -61,11 +70,13 @@ export async function GET(request: Request) {
 
   if (keyword) {
     const safeKeyword = keyword.toLowerCase().replace(/'/g, "''");
-    where.push(`lower(course_name) like '%${safeKeyword}%'`);
+    where.push(
+      `(lower(course_name) like '%${safeKeyword}%' OR lower(brochure_section) like '%${safeKeyword}%' OR lower(venue_name) like '%${safeKeyword}%')`
+    );
   }
 
   const url = new URL(SOCRATA_ENDPOINT);
-  url.searchParams.set('$limit', '60');
+  url.searchParams.set('$limit', '100');
   url.searchParams.set('$order', 'class_date ASC, course_default_price ASC');
   url.searchParams.set('$where', where.join(' AND '));
 
